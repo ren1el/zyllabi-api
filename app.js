@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const cors = require('cors');
 const config = require('./utils/config');
 const mongoose = require('mongoose');
 const syllabiRouter = require('./controllers/syllabi');
@@ -21,7 +20,6 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology
   });
 
 app.use(express.static('build'));
-app.use(cors());
 app.use(express.json());
 app.use('/api/syllabi', syllabiRouter);
 app.use('/api/departments', courseDepartmentRouter);
