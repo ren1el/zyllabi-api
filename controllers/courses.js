@@ -30,8 +30,6 @@ coursesRouter.get('/:department/:courseNumber', async (req, res) => {
   }
 
   const course = await Course.find({ department: department, courseNumber: req.params.courseNumber });
-
-  console.log(course);
   
   if(!course) {
     return res.status(404).json({
@@ -39,33 +37,7 @@ coursesRouter.get('/:department/:courseNumber', async (req, res) => {
     });
   }
 
-  res.json({ hi: 'hi' });
-});
-
-coursesRouter.post('/', async (req, res) => {
-  const body = req.body;
-  
-  const department = await CourseDepartment.findOne({ name: body.department });
-
-  if(!department) {
-    //SEND APPROPRIATE STATUS CODE
-    return res.json({
-      error: 'Department does not exist'
-    });
-  }
-
-  const newCourse = new Course({
-    department: body.department,
-    courseNumber: body.courseNumber
-  });
-
-  try {
-    const savedCourse = await newCourse.save();
-    return res.json(savedCourse);
-  } catch (error) {
-    console.log(`Error adding a course : ${error.message}`);
-    return res.json({ error });
-  }
+  res.json(course);
 });
 
 module.exports = coursesRouter;

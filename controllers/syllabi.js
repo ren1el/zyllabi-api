@@ -238,9 +238,15 @@ syllabiRouter.delete('/:syllabusId', async (req, res) => {
     }
 
     //Delete syllabus from user's contributions
+    //If the user no longer has contributions after deletion, delete them from the database
     const user = await User.findOne({ googleId });
     user.syllabiContributed = user.syllabiContributed.filter((syllabus) => syllabus.toString() !== savedSyllabus._id.toString());
-    await user.save();
+
+    if(user.syllabiContributed == 0) {
+      await User.findByIdAndDelete(user._id)
+    } else {
+      await user.save();
+    }
 
     //Delete the syllabus from the course
     //If the course has no syllabi after deletion, delete the course and update the department
