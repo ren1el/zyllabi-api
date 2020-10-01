@@ -3,7 +3,7 @@ module.exports = {
     'commonjs': true,
     'es2020': true,
     'node': true,
-    'jest/globals': true
+    'jest': true
   },
   'extends': 'eslint:recommended',
   'parserOptions': {
