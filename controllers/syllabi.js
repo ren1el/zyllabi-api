@@ -25,7 +25,7 @@ syllabiRouter.get('/', async (req, res) => {
 
     return res.json(savedSyllabi);
   } catch(error) {
-    console.log(`Error retrieving syllabi : ${error.messag}`);
+    console.log(`Error retrieving syllabi : ${error.message}`);
     return res.status(400).send({ message: error.message });
   }
 });
@@ -113,8 +113,8 @@ syllabiRouter.post('/', async (req, res) => {
     let savedCourse = await Course.findOne({ department, courseNumber: body.courseNumber });
 
     if(!department) {
-      return res.json({
-        error: `The department ${body.department} does not exist.`
+      return res.status(404).send({
+        message: `The department ${body.department} does not exist.`
       });
     }
 
@@ -132,7 +132,6 @@ syllabiRouter.post('/', async (req, res) => {
 
     //Grab all the parameters from the request and save it as a new syllabus to the database.
     //Return the saved syllabus.
-
     const newSyllabus = new Syllabus({
       course: savedCourse._id,
       instructor: body.instructor,

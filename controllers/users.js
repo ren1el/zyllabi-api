@@ -30,6 +30,7 @@ usersRouter.get('/:id', async (req, res) => {
 
     return res.json(user);
   } catch(error) {
+    console.log(`Error retrieving user : ${error.message}`);
     res.status(400).send({ message: error.message });
   }
 });
