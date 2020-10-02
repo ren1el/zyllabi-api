@@ -30,6 +30,37 @@ test('courses are returned as json', async () => {
     .expect('Content-Type', /application\/json/);
 });
 
+test('can get course from department and course number', async () => {
+  const response = await api
+    .get('/api/courses/I&C SCI/31')
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+
+  expect(response.body).not.toBe(null);
+});
+
+test('can get the same course even with different case', async () => {
+  const response = await api
+    .get('/api/courses/i&c SCi/31')
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+
+  const course = { courseNumber: '31' };
+  expect(response.body).toMatchObject(course);
+});
+
+test('trying to find a nonexistent department returns 404', async () => {
+  await api
+    .get('/api/courses/IN4MATX/41')
+    .expect(404);
+});
+
+test('trying to find a nonexistent course returns 404', async () => {
+  await api
+    .get('/api/courses/I&C SCI/32')
+    .expect(404);
+});
+
 test('correct number of courses are returned', async () => {
   await api
     .get('/api/courses')

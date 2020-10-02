@@ -52,8 +52,19 @@ syllabiRouter.get('/:courseDept/:courseNumber', async (req, res) => {
     }
 
     const savedSyllabi = await Syllabus.find({ course: course })
-      .populate('courseDept', { name: 1 })
-      .populate('course', { courseNumber: 1 })
+      .populate({
+        path: 'course', 
+        select: { 
+          department: 1,
+          courseNumber: 1 
+        },
+        populate: {
+          path: 'department',
+          select: {
+            courses: 0
+          }
+        }
+      })
       .sort({ year: -1 });
 
     if(savedSyllabi.length > 0) {
@@ -243,7 +254,7 @@ syllabiRouter.delete('/:syllabusId', async (req, res) => {
     user.syllabiContributed = user.syllabiContributed.filter((syllabus) => syllabus.toString() !== savedSyllabus._id.toString());
 
     if(user.syllabiContributed == 0) {
-      await User.findByIdAndDelete(user._id)
+      await User.findByIdAndDelete(user._id);
     } else {
       await user.save();
     }
