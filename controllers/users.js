@@ -4,6 +4,7 @@ const User = require('../models/user');
 usersRouter.get('/:id', async (req, res) => {
   try {
     const googleId = req.params.id;
+    
     const user = await User.findOne({ googleId })
       .populate({
         path: 'syllabiContributed',
