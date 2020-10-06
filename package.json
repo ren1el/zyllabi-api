@@ -1,5 +1,5 @@
 {
-  "name": "zyllabi-api",
+  "name": "zyllabi-backend",
   "version": "1.0.0",
   "description": "The backend for Zyllabi.",
   "main": "index.js",
