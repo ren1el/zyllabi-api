@@ -26,7 +26,7 @@ app.use('/api/departments', courseDepartmentRouter);
 app.use('/api/courses', coursesRouter);
 app.use('/api/zyllabis3bucket', zyllabis3bucketRouter);
 app.use('/api/user', usersRouter);
-app.get('/', (req,res) =>{
+app.get('*', (req,res) =>{
   res.sendFile(path.join(__dirname+'/build/index.html'));
 });
 
