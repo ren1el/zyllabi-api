@@ -25,7 +25,7 @@ syllabiRouter.get('/', async (req, res) => {
 
     return res.json(savedSyllabi);
   } catch(error) {
-    console.log(`Error retrieving syllabi : ${error.message}`);
+    console.log(`Error retrieving syllabi : ${error.messag}`);
     return res.status(400).send({ message: error.message });
   }
 });
@@ -52,19 +52,8 @@ syllabiRouter.get('/:courseDept/:courseNumber', async (req, res) => {
     }
 
     const savedSyllabi = await Syllabus.find({ course: course })
-      .populate({
-        path: 'course', 
-        select: { 
-          department: 1,
-          courseNumber: 1 
-        },
-        populate: {
-          path: 'department',
-          select: {
-            courses: 0
-          }
-        }
-      })
+      .populate('courseDept', { name: 1 })
+      .populate('course', { courseNumber: 1 })
       .sort({ year: -1 });
 
     if(savedSyllabi.length > 0) {
@@ -113,8 +102,8 @@ syllabiRouter.post('/', async (req, res) => {
     let savedCourse = await Course.findOne({ department, courseNumber: body.courseNumber });
 
     if(!department) {
-      return res.status(404).send({
-        message: `The department ${body.department} does not exist.`
+      return res.json({
+        error: `The department ${body.department} does not exist.`
       });
     }
 
@@ -132,6 +121,7 @@ syllabiRouter.post('/', async (req, res) => {
 
     //Grab all the parameters from the request and save it as a new syllabus to the database.
     //Return the saved syllabus.
+
     const newSyllabus = new Syllabus({
       course: savedCourse._id,
       instructor: body.instructor,
@@ -248,15 +238,9 @@ syllabiRouter.delete('/:syllabusId', async (req, res) => {
     }
 
     //Delete syllabus from user's contributions
-    //If the user no longer has contributions after deletion, delete them from the database
     const user = await User.findOne({ googleId });
     user.syllabiContributed = user.syllabiContributed.filter((syllabus) => syllabus.toString() !== savedSyllabus._id.toString());
-
-    if(user.syllabiContributed == 0) {
-      await User.findByIdAndDelete(user._id);
-    } else {
-      await user.save();
-    }
+    await user.save();
 
     //Delete the syllabus from the course
     //If the course has no syllabi after deletion, delete the course and update the department

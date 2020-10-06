@@ -4,7 +4,6 @@ const User = require('../models/user');
 usersRouter.get('/:id', async (req, res) => {
   try {
     const googleId = req.params.id;
-    
     const user = await User.findOne({ googleId })
       .populate({
         path: 'syllabiContributed',
@@ -31,7 +30,6 @@ usersRouter.get('/:id', async (req, res) => {
 
     return res.json(user);
   } catch(error) {
-    console.log(`Error retrieving user : ${error.message}`);
     res.status(400).send({ message: error.message });
   }
 });

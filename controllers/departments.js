@@ -14,24 +14,24 @@ courseDepartmentRouter.get('/', async (req, res) => {
 });
 
 courseDepartmentRouter.post('/', async (req, res) => {
+  const body = req.body;
+  const documentExists = await CourseDepartment.exists({ name: body.name });
+
+  if(documentExists) {
+    res.json({ error: 'The department already exists!' });
+    return;
+  }
+  
+  const newDepartment = new CourseDepartment({
+    name: body.name,
+  });
+
   try {
-    const body = req.body;
-    const documentExists = await CourseDepartment.exists({ name: body.name.toUpperCase() });
-
-    if(documentExists) {
-      res.status(400).json({ error: 'The department already exists!' });
-      return;
-    }
-    
-    const newDepartment = new CourseDepartment({
-      name: body.name.toUpperCase(),
-    });
-
     const savedDepartment = await newDepartment.save();
     res.json(savedDepartment);
   } catch(error) {
     console.log(`Error adding a department : ${error.message}`);
-    res.status(400).send({ message: error.message });
+    res.json({ error });
   }
 });
 

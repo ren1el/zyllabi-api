@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const app = express();
 const path = require('path');
 const config = require('./utils/config');
@@ -19,10 +18,6 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology
   .catch((error) => {
     console.log(`Error connecting to MongoDB: ${error.message}`);
   });
-
-if(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
-  app.use(cors());
-}
 
 app.use(express.static('build'));
 app.use(express.json());
