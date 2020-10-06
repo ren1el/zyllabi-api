@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const path = require('path');
 const config = require('./utils/config');
@@ -19,7 +20,12 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology
     console.log(`Error connecting to MongoDB: ${error.message}`);
   });
 
-app.use(express.static(__dirname + '/build'));
+if(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  app.use(cors());
+}
+
+app.use(cors());
+app.use(express.static('build'));
 app.use(express.json());
 app.use('/api/syllabi', syllabiRouter);
 app.use('/api/departments', courseDepartmentRouter);
