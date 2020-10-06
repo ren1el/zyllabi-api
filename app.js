@@ -19,7 +19,7 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology
     console.log(`Error connecting to MongoDB: ${error.message}`);
   });
 
-app.use(express.static('build'));
+app.use(express.static(__dirname + '/build'));
 app.use(express.json());
 app.use('/api/syllabi', syllabiRouter);
 app.use('/api/departments', courseDepartmentRouter);
